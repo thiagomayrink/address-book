@@ -1,7 +1,7 @@
 import { ChangeEvent, useState } from "react";
 import styled from "styled-components";
 import FlexCenterDiv from "../FlexCenterDiv";
-import { Person, Mail, Cake, Room } from "@material-ui/icons";
+import { Person, Mail, Cake, Room } from "@mui/icons-material";
 import Spreader from "../Spreader";
 import Input from "./Input";
 import Button from "./Button";
@@ -17,7 +17,7 @@ import Select from "@/components/SignUpForm/Select";
 import { ufList } from "./ufList";
 import useApi from "@/hooks/useApi";
 import AddressSubmitData from "../interfaces/addressSubmitData";
-import { TextField, MenuItem } from "@mui/material";
+import { MenuItem } from "@mui/material";
 
 export default function SignUpForm() {
   const [dynamicInputIsLoading, setDynamicInputIsLoading] = useState(false);
@@ -133,14 +133,14 @@ export default function SignUpForm() {
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <InputWrapper>
             <MobileDatePicker
-              name="birthday"
               // "disabled" e "readOnly" props desabilitam o campo.
+              name="birthday"
+              inputVariant="outlined"
               views={["year", "month", "day"]}
               label="Data de Nascimento"
-              inputVariant="outlined"
               clearable
               value={data.birthday}
-              renderInput={(params) => <TextField {...params} />}
+              renderInput={(params) => <Input {...params} />}
               onChange={(date) => {
                 customHandleChange(
                   "birthday",

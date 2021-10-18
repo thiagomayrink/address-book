@@ -1,4 +1,4 @@
-import { Menu, MenuItem } from "@material-ui/core";
+import { Menu, MenuItem } from "@mui/material";
 
 import Link from "next/link";
 
@@ -26,13 +26,13 @@ export default function NavMenu(props: props) {
       open={Boolean(anchorEl)}
       onClose={handleClose}
     >
-      <Link href="/">
+      <Link href="/" passHref>
         <MenuItem onClick={handleClose}>Início</MenuItem>
       </Link>
-      <Link href="/addresses/new">
+      <Link href="/addresses/new" passHref>
         <MenuItem onClick={handleClose}>Adicionar Endereço</MenuItem>
       </Link>
-      <Link href="/addresses">
+      <Link href="/addresses" passHref>
         <MenuItem onClick={handleClose}>Lista</MenuItem>
       </Link>
     </Menu>

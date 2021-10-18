@@ -1,4 +1,4 @@
-import MuiButton from "@material-ui/core/Button";
+import { Button as MuiButton } from "@mui/material";
 import styled from "styled-components";
 
 export default function Button({

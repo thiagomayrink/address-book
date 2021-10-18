@@ -1,14 +1,7 @@
 import { useRef } from "react";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
-import InputLabel from "@material-ui/core/InputLabel";
+import { FormControl, Select, OutlinedInput, InputLabel } from "@mui/material";
 import styled from "styled-components";
-
-const FormControlWrapper = styled.section`
-  display: flex;
-  flex-direction: column;
-`;
+import { ReactJSXElement } from "@emotion/react/types/jsx-namespace";
 
 interface MultiSelectProps {
   label: string;
@@ -16,7 +9,7 @@ interface MultiSelectProps {
   id: string;
   value: string;
   onChange: any;
-  children: any;
+  children: ReactJSXElement;
 }
 
 export default function MultiSelect({
@@ -36,7 +29,6 @@ export default function MultiSelect({
           {label}
         </InputLabel>
         <Select
-          autoWidth
           value={value}
           onChange={onChange}
           input={<OutlinedInput fullWidth name={name} id={id} />}
@@ -47,3 +39,10 @@ export default function MultiSelect({
     </FormControlWrapper>
   );
 }
+
+const FormControlWrapper = styled.section`
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+`;
