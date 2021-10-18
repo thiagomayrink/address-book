@@ -1,17 +1,10 @@
-import {
-  AppBar,
-  IconButton,
-  Menu,
-  MenuItem,
-  Toolbar,
-  Typography,
-} from "@material-ui/core";
+import { AppBar, IconButton, Toolbar, Typography } from "@material-ui/core";
 import { Box } from "@material-ui/system";
 import { Menu as MenuIcon } from "@material-ui/icons";
 
 import { MouseEvent, useState } from "react";
 
-import Link from "next/link";
+import NavMenu from "@/components/TopAppBar/NavMenu";
 
 export default function TopAppBar() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -40,31 +33,7 @@ export default function TopAppBar() {
           >
             <MenuIcon />
           </IconButton>
-          <Menu
-            id="menu-appbar"
-            anchorEl={anchorEl}
-            anchorOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            keepMounted
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            open={Boolean(anchorEl)}
-            onClose={handleClose}
-          >
-            <Link href="/">
-              <MenuItem onClick={handleClose}>Início</MenuItem>
-            </Link>
-            <Link href="/addresses/new">
-              <MenuItem onClick={handleClose}>Adicionar Endereço</MenuItem>
-            </Link>
-            <Link href="/addresses">
-              <MenuItem onClick={handleClose}>Lista</MenuItem>
-            </Link>
-          </Menu>
+          <NavMenu handleClose={handleClose} anchorEl={anchorEl} />
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Lista de Endereços
           </Typography>
