@@ -6,6 +6,7 @@ import Head from "next/head";
 import type { AppProps } from "next/app";
 
 import TopAppBar from "@/components/TopAppBar";
+import Container from "@/components/Container";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -21,7 +22,9 @@ function MyApp({ Component, pageProps }: AppProps) {
         />
       </Head>
       <TopAppBar />
-      <Component {...pageProps} />
+      <Container>
+        <Component {...pageProps} />
+      </Container>
     </>
   );
 }
