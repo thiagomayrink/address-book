@@ -17,7 +17,7 @@ import Select from "@/components/SignUpForm/Select";
 import { ufList } from "./ufList";
 import useApi from "@/hooks/useApi";
 import AddressSubmitData from "../interfaces/addressSubmitData";
-import { MenuItem } from "@mui/material";
+import { TextField, MenuItem } from "@mui/material";
 
 export default function SignUpForm() {
   const [dynamicInputIsLoading, setDynamicInputIsLoading] = useState(false);
@@ -133,11 +133,11 @@ export default function SignUpForm() {
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <InputWrapper>
             <MobileDatePicker
-              // "disabled" e "readOnly" props desabilitam o campo.
               name="birthday"
-              inputVariant="outlined"
+              // "disabled" e "readOnly" props desabilitam o campo.
               views={["year", "month", "day"]}
               label="Data de Nascimento"
+              inputVariant="outlined"
               clearable
               value={data.birthday}
               renderInput={(params) => <Input {...params} />}

@@ -1,5 +1,5 @@
-import "@/styles/globals.css";
 import "@/styles/reset.css";
+import "@/styles/globals.css";
 
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider } from "@mui/material/styles";
@@ -10,7 +10,6 @@ import theme from "@/styles/themes/theme";
 
 import TopAppBar from "@/components/TopAppBar";
 import Spreader from "@/components/Spreader";
-import Container from "@/components/Container";
 
 export default function MyApp(props: AppProps) {
   const { Component, pageProps } = props;
@@ -28,9 +27,7 @@ export default function MyApp(props: AppProps) {
         <CssBaseline />
         <TopAppBar />
         <Spreader height="24px" />
-        <Container>
-          <Component {...pageProps} />
-        </Container>
+        <Component {...pageProps} />
       </ThemeProvider>
     </>
   );
