@@ -28,6 +28,7 @@ function Input({
 
 const StyledInput = styled(Input)`
   width: 100%;
+  z-index: 0;
 `;
 
 export default StyledInput;

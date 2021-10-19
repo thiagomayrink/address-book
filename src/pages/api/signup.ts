@@ -4,7 +4,7 @@ import { MongoClient, Db } from "mongodb";
 import SignUpData from "@/components/interfaces/signUpData";
 
 let cachedDb: Db | null = null;
-console.log(cachedDb);
+
 async function connectToDatabase(uri: string) {
   if (cachedDb) {
     return cachedDb;
@@ -28,10 +28,9 @@ async function connectToDatabase(uri: string) {
 }
 
 export default async (request: NextApiRequest, response: NextApiResponse) => {
-  console.log(request.method);
 
   if (!process.env.MONGODB_URI) {
-    response.status(911).json({ text: "Database URL error" });
+    response.status(500).json({ text: "Database URL error" });
     return;
   }
 

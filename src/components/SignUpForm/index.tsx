@@ -53,11 +53,9 @@ export default function SignUpForm() {
       signUp
         .save(newData)
         .then(() => {
-          console.log("ok! salvo");
           toast("Salvo com sucesso!");
         })
         .catch((err) => {
-          console.log("ERRO! não salvo");
           toast("Tente novamente mais tarde :(");
         });
     },

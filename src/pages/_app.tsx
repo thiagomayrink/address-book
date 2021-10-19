@@ -10,6 +10,7 @@ import Head from "next/head";
 import theme from "@/styles/themes/theme";
 
 import TopAppBar from "@/components/TopAppBar";
+import Footer from "@/components/Footer";
 import Spreader from "@/components/Spreader";
 import { ToastContainer } from "react-toastify";
 
@@ -31,6 +32,7 @@ export default function MyApp(props: AppProps) {
         <TopAppBar />
         <Spreader height="24px" />
         <Component {...pageProps} />
+        <Footer />
       </ThemeProvider>
     </>
   );
