@@ -17,11 +17,13 @@ import Select from "@/components/SignUpForm/Select";
 import { ufList } from "./ufList";
 import useApi from "@/hooks/useApi";
 import AddressSubmitData from "../interfaces/addressSubmitData";
-import { TextField, MenuItem } from "@mui/material";
+import { MenuItem } from "@mui/material";
+import { toast } from "react-toastify";
 
 export default function SignUpForm() {
   const [dynamicInputIsLoading, setDynamicInputIsLoading] = useState(false);
   const { signUp, cep } = useApi();
+
   const {
     handleSubmit,
     handleChange,
@@ -48,9 +50,18 @@ export default function SignUpForm() {
         },
       };
 
-      // axios Post aqui!
-      console.log(newData);
+      signUp
+        .save(newData)
+        .then(() => {
+          console.log("ok! salvo");
+          toast("Salvo com sucesso!");
+        })
+        .catch((err) => {
+          console.log("ERRO! não salvo");
+          toast("Tente novamente mais tarde :(");
+        });
     },
+
     initialValues: {
       name: "",
       email: "",
@@ -133,11 +144,8 @@ export default function SignUpForm() {
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <InputWrapper>
             <MobileDatePicker
-              name="birthday"
-              // "disabled" e "readOnly" props desabilitam o campo.
               views={["year", "month", "day"]}
               label="Data de Nascimento"
-              inputVariant="outlined"
               clearable
               value={data.birthday}
               renderInput={(params) => <Input {...params} />}
@@ -263,7 +271,3 @@ const StyledForm = styled.form`
     padding: 0 16px 0 8px;
   }
 `;
-
-// const StyledInput = styled(Input)`
-//   width: 100%;
-// `;

@@ -3,10 +3,10 @@ import SignUpData from "@/components/interfaces/signUpData";
 
 export default class SignUpApi {
   save(body: SignUpData) {
-    return api.post("/addresses", body, {});
+    return api.patch("/signup", body);
   }
 
-  getPersonalInformations() {
-    return api.get("/addresses", {});
+  getAll() {
+    return api.get("/signup");
   }
 }

@@ -9,7 +9,7 @@ interface MultiSelectProps {
   id: string;
   value: string;
   onChange: any;
-  children: ReactJSXElement;
+  children: React.ReactNode;
 }
 
 export default function MultiSelect({
