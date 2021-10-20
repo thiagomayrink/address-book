@@ -3,7 +3,6 @@ import { ChangeEvent, FormEvent, useState } from "react";
 type Fn = (a: string | number) => string | number;
 
 export const useForm = (options: any) => {
-  console.log(options)
   const [data, setData] = useState(options?.initialValues || {});
   const [errors, setErrors] = useState<any>({});
 
