@@ -1,16 +1,10 @@
 import AddressList from "@/components/AddressList";
-import styled from "styled-components";
+import CenterContainer from "@/components/CenterContainer";
 
 export default function Adresses() {
   return (
-    <FormContainer>
+    <CenterContainer>
       <AddressList />
-    </FormContainer>
+    </CenterContainer>
   );
 }
-
-const FormContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;

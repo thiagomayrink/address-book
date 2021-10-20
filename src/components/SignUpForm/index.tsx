@@ -1,10 +1,11 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useState, useEffect } from "react";
 import styled from "styled-components";
 import FlexCenterDiv from "@/components/FlexCenterDiv";
 import { Person, Mail, Cake, Room } from "@mui/icons-material";
 import Spreader from "@/components/Spreader";
 import Input from "@/components/SignUpForm/Input";
 import SaveIcon from "@mui/icons-material/Save";
+import BuildIcon from "@mui/icons-material/Build";
 import MobileDatePicker from "@mui/lab/DatePicker";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
@@ -19,20 +20,31 @@ import { ufList } from "@/components/SignUpForm/ufList";
 import AddressSubmitData from "@/components/interfaces/AddressSubmitData";
 import GetViaCepData from "@/components/interfaces/GetViaCepData";
 
-import { MenuItem } from "@mui/material";
+import { MenuItem, Typography } from "@mui/material";
 import { toast } from "react-toastify";
 import LoadingButton from "./LoadingButton";
 
 import { useRouter } from "next/router";
 import useApi from "@/hooks/useApi";
+import SignUpData from "@/components/interfaces/SignUpData";
 
-export default function SignUpForm(props: any) {
-  console.log(props);
+type Props = {
+  currentUserData?: SignUpData | null;
+};
+
+export default function SignUpForm(props: Props) {
+  const { currentUserData } = props;
 
   const [dynamicInputIsLoading, setDynamicInputIsLoading] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const router = useRouter();
   const { signUp, cep } = useApi();
+
+  useEffect(() => {
+    if (currentUserData) {
+      setIsEditMode(true);
+    }
+  }, [setIsEditMode]);
 
   const {
     handleSubmit,
@@ -73,18 +85,17 @@ export default function SignUpForm(props: any) {
           toast("Tente novamente mais tarde :(");
         });
     },
-
     initialValues: {
-      name: "",
-      email: "",
-      birthday: null,
-      cep: "",
-      street: "",
-      city: "",
-      number: "",
-      state: "",
-      neighborhood: "",
-      addressDetail: "",
+      name: currentUserData?.name || "",
+      email: currentUserData?.email || "",
+      birthday: currentUserData?.birthday || null,
+      cep: currentUserData?.address?.cep || "",
+      street: currentUserData?.address?.street || "",
+      city: currentUserData?.address?.city || "",
+      number: currentUserData?.address?.number || "",
+      state: currentUserData?.address?.state || "",
+      neighborhood: currentUserData?.address?.neighborhood || "",
+      addressDetail: currentUserData?.address?.addressDetail || "",
     },
   });
 
@@ -126,6 +137,10 @@ export default function SignUpForm(props: any) {
 
   return (
     <StyledForm onSubmit={handleSubmit}>
+      <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+        {isEditMode ? "Editar Endereço" : "Adicionar Endereço"}
+      </Typography>
+      <Spreader height="22px"/>
       <fieldset disabled={dynamicInputIsLoading}>
         <FlexCenterDiv>
           <Person />
@@ -283,7 +298,7 @@ export default function SignUpForm(props: any) {
         disabled={dynamicInputIsLoading}
         loading={dynamicInputIsLoading}
         loadingPosition="start"
-        startIcon={<SaveIcon />}
+        startIcon={isEditMode ? <BuildIcon /> : <SaveIcon />}
         variant="outlined"
       >
         Salvar

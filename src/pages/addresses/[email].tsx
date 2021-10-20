@@ -1,57 +1,53 @@
 import SignUpForm from "@/components/SignUpForm";
 import Spreader from "@/components/Spreader";
-import styled from "styled-components";
 
-import { useRouter } from "next/router";
-import SignUpData from "@/components/interfaces/SignUpData"
+import SignUpData from "@/components/interfaces/SignUpData";
 import SignUpGetData from "@/components/interfaces/SignUpGetData";
 import useApi from "@/hooks/useApi";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-export default function EditAddress() {
+import { InferGetServerSidePropsType } from "next";
+import CenterContainer from "@/components/CenterContainer";
+
+export const getServerSideProps = async (context: any) => {
+  const { signUp } = useApi();
+  const email = context.query.email as string;
+  const { data } = await signUp.getOneByEmail(email);
+  const serverData = data as SignUpGetData;
+
+  const { address } = serverData;
+
+  const currentUserData = {
+    name: serverData.name,
+    email: serverData.email,
+    birthday: serverData.birthday,
+    address: {
+      cep: address.cep,
+      street: address.street,
+      city: address.city,
+      number: address.number,
+      state: address.state,
+      neighborhood: address.neighborhood,
+      addressDetail: address.addressDetail,
+    },
+  };
+  return { props: { currentUserData } };
+};
+
+function EditAddress({
+  currentUserData,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [currentData, setCurrentData]: [
     SignUpData | null,
     (currentData: SignUpData | null) => void
-  ] = useState<SignUpData | null>(null);
-
-  const { signUp } = useApi();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (router.query.email) {
-      const email = router.query.email as string;
-      signUp.getOneByEmail(email).then((response) => {
-        const data = response.data as SignUpGetData;
-        const { address } = data;
-        const currentUserData = {
-          name: data.name,
-          email: data.email,
-          birthday: data.birthday,
-          address: {
-            cep: address.cep,
-            street: address.street,
-            city: address.city,
-            number: address.number,
-            state: address.state,
-            neighborhood: address.neighborhood,
-            addressDetail: address.addressDetail,
-          },
-        };
-        setCurrentData(currentUserData);
-      });
-    }
-  }, [setCurrentData]);
+  ] = useState<SignUpData | null>(currentUserData || null);
 
   return (
-    <FormContainer>
+    <CenterContainer>
       <SignUpForm currentUserData={currentData} />
       <Spreader height="24px" />
-    </FormContainer>
+    </CenterContainer>
   );
 }
 
-const FormContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
+export default EditAddress;
