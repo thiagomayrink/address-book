@@ -1,5 +1,5 @@
 //prettier-ignore
-export default interface addressKeys {
+export default interface AddressKeys {
   "CEP": string;
   "Estado": string;
   "Cidade": string;

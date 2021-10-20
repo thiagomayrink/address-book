@@ -24,7 +24,8 @@
     "react-input-mask": "^2.0.4",
     "react-is": "^17.0.2",
     "react-toastify": "^8.0.3",
-    "styled-components": "^5.3.1"
+    "styled-components": "^5.3.1",
+    "zustand": "^3.5.14"
   },
   "scripts": {
     "dev": "next",
@@ -38,8 +39,6 @@
     "@types/react-dom": "latest",
     "@types/react-input-mask": "^3.0.1",
     "@types/styled-components": "^5.1.15",
-    "i": "^0.3.7",
-    "npm": "^8.1.0",
     "prettier": "^2.4.1",
     "typescript": "latest"
   }

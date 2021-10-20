@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { MongoClient, Db } from "mongodb";
-import SignUpData from "@/components/interfaces/signUpData";
+import SignUpData from "@/components/interfaces/SignUpData";
 
 let cachedDb: Db | null = null;
 
@@ -28,7 +28,6 @@ async function connectToDatabase(uri: string) {
 }
 
 export default async (request: NextApiRequest, response: NextApiResponse) => {
-
   if (!process.env.MONGODB_URI) {
     response.status(500).json({ text: "Database URL error" });
     return;
@@ -39,24 +38,21 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
   const collection = db.collection("users");
 
   if (request.method === "PATCH") {
-    const { name, email, address } = request.body as SignUpData;
+    const { name, email, birthday, address } = request.body as SignUpData;
 
-    if (!name && !email && !address) {
+    if (!name && !email && !birthday && !address) {
       return response.status(422).json({ text: "Dados inválidos" });
     }
 
     const { cep, street, city, number, state, neighborhood } = address;
-    let addressDetail = null;
-
-    if (address.addressDetail) {
-      addressDetail = address.addressDetail;
-    }
+    const addressDetail = address?.addressDetail || null;
 
     const query = { email: email };
     const update = {
       $set: {
         name,
         email,
+        birthday,
         address: {
           cep,
           street,
@@ -76,8 +72,21 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
     return response.status(201).json({ ok: true });
   }
 
-  if ((request.method === "GET")) {
+  if (request.method === "GET" && request?.query?.email) {
+    const email = request.query.email as string;
+    const result = await collection.findOne({ email: email });
+    return response.send(result);
+  }
+
+  if (request.method === "GET") {
     const result = await collection.find({}).toArray();
     return response.send(result);
+  }
+
+  if (request.method === "DELETE") {
+    const email = request.body as { email: string };
+    const deleted = await collection.findOneAndDelete({ email: email });
+
+    return response.send(deleted);
   }
 };

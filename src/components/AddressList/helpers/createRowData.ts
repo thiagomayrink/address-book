@@ -1,12 +1,13 @@
-import signupGetData from "@/components/interfaces/signupGetData";
+import SignUpGetData from "@/components/interfaces/SignUpGetData";
 
-export default function createData(data: signupGetData) {
-  const { _id, name, email, address } = data;
+export default function createData(data: SignUpGetData) {
+  const { _id, name, email, birthday, address } = data;
   //prettier-ignore
   return {
     "Id": _id,
     "Nome": name,
     "E-mail": email,
+    "Nascimento": birthday,
     address: {
       "CEP": address?.cep,
       "Estado": address?.state,

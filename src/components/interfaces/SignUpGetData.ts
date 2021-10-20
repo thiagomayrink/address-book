@@ -1,6 +1,9 @@
-export default interface signupGetData {
+export default interface SignUpGetData {
   _id: string;
   email: string;
+  birthday: string;
+  name: string;
+  updatedAt: string;
   address: {
     cep: string;
     street: string;
@@ -10,6 +13,4 @@ export default interface signupGetData {
     neighborhood: string;
     addressDetail: string;
   };
-  name: string;
-  updatedAt: string;
 }

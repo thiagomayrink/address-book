@@ -9,12 +9,58 @@ import Typography from "@mui/material/Typography";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { useState } from "react";
-import createData from "./helpers/createRowData";
-import addressKeys from "../interfaces/addressKeys";
+import createData from "@/components/AddressList/helpers/createRowData";
+import Button from "@/components/AddressList/Button";
 
-export default function Row(props: { row: ReturnType<typeof createData> }) {
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import BuildIcon from "@mui/icons-material/Build";
+import useApi from "@/hooks/useApi";
+import { toast } from "react-toastify";
+
+import { useRouter } from "next/router";
+
+import AddressKeys from "@/components/interfaces/AddressKeys";
+import TranslatedRows from "@/components/interfaces/TranslatedRows";
+import PersonalDataTable from "@/components/AddressList/PersonalDataTable";
+
+export default function Row(props: {
+  row: ReturnType<typeof createData>;
+  rows: TranslatedRows[];
+  setRows: (rows: TranslatedRows[] | null) => void;
+}) {
   const { row } = props;
   const [open, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
+  const { signUp } = useApi();
+
+  function editItem(email: string) {
+    router.push(`/addresses/${email}`);
+  }
+
+  function deleteItem(email: string) {
+    setIsLoading(true);
+    signUp
+      .deleteByEmail(email)
+      .then((response: any) => {
+        const item = response.data.value || null;
+        //refatorar caso seja possível fazer utilizando zustand!
+        if (item && item.email) {
+          const filteredRows = props.rows.filter(
+            (row) => row["E-mail"] !== item.email
+          );
+          props.setRows(filteredRows);
+        }
+
+        setIsLoading(false);
+        toast("Deletado com sucesso!");
+      })
+      .catch(() => {
+        setIsLoading(false);
+        toast("Não foi possível deletar! :(");
+      });
+  }
 
   return (
     <>
@@ -28,19 +74,38 @@ export default function Row(props: { row: ReturnType<typeof createData> }) {
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell component="th" scope="row" width="40%">
+        <TableCell component="th" scope="row" width="90%">
           {row["Nome"]}
         </TableCell>
-        <TableCell width="40%">{row["E-mail"]}</TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={3}>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
               <Typography variant="h6" component="div">
-                Endereço
+                Dados Pessoais
               </Typography>
-              <Table size="small" aria-label="addresses">
+              <PersonalDataTable
+                birthday={row["Nascimento"]}
+                email={row["E-mail"]}
+              />
+              <Typography variant="h6" component="div">
+                Endereço
+                <Button
+                  disabled={isLoading}
+                  onClick={() => editItem(row["E-mail"])}
+                >
+                  <BuildIcon />
+                </Button>
+                <Button
+                  disabled={isLoading}
+                  color="secondary"
+                  onClick={() => deleteItem(row["E-mail"])}
+                >
+                  <DeleteForeverIcon />
+                </Button>
+              </Typography>
+              <Table size="small" aria-label="endereço">
                 <TableBody>
                   {Object.keys(row.address).map((addressKey) => {
                     return (
@@ -49,7 +114,7 @@ export default function Row(props: { row: ReturnType<typeof createData> }) {
                           {addressKey}
                         </TableCell>
                         <TableCell width="50%">
-                          {row.address[addressKey as keyof addressKeys]}
+                          {row.address[addressKey as keyof AddressKeys]}
                         </TableCell>
                       </TableRow>
                     );

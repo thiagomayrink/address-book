@@ -1,27 +1,37 @@
 import { ChangeEvent, useState } from "react";
 import styled from "styled-components";
-import FlexCenterDiv from "../FlexCenterDiv";
+import FlexCenterDiv from "@/components/FlexCenterDiv";
 import { Person, Mail, Cake, Room } from "@mui/icons-material";
-import Spreader from "../Spreader";
-import Input from "./Input";
-import Button from "./Button";
+import Spreader from "@/components/Spreader";
+import Input from "@/components/SignUpForm/Input";
+import SaveIcon from "@mui/icons-material/Save";
 import MobileDatePicker from "@mui/lab/DatePicker";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import { InputWrapper } from "./InputWrapper";
-import { ErrorMsg } from "./ErrorMsg";
+import { InputWrapper } from "@/components/SignUpForm/InputWrapper";
+import { ErrorMsg } from "@/components/SignUpForm/ErrorMsg";
 import dayjs from "dayjs";
 import { useForm } from "@/hooks/useForm";
-import validations from "./Validations";
+import validations from "@/components/SignUpForm/Validations";
 import Select from "@/components/SignUpForm/Select";
-import { ufList } from "./ufList";
-import useApi from "@/hooks/useApi";
-import AddressSubmitData from "../interfaces/addressSubmitData";
+import { ufList } from "@/components/SignUpForm/ufList";
+
+import AddressSubmitData from "@/components/interfaces/AddressSubmitData";
+import GetViaCepData from "@/components/interfaces/GetViaCepData";
+
 import { MenuItem } from "@mui/material";
 import { toast } from "react-toastify";
+import LoadingButton from "./LoadingButton";
 
-export default function SignUpForm() {
+import { useRouter } from "next/router";
+import useApi from "@/hooks/useApi";
+
+export default function SignUpForm(props: any) {
+  console.log(props);
+
   const [dynamicInputIsLoading, setDynamicInputIsLoading] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const router = useRouter();
   const { signUp, cep } = useApi();
 
   const {
@@ -35,6 +45,7 @@ export default function SignUpForm() {
     validations: validations,
 
     onSubmit: (data: AddressSubmitData) => {
+      setDynamicInputIsLoading(true);
       const newData = {
         name: data.name,
         email: data.email,
@@ -53,9 +64,12 @@ export default function SignUpForm() {
       signUp
         .save(newData)
         .then(() => {
+          setDynamicInputIsLoading(false);
+          router.push("/addresses");
           toast("Salvo com sucesso!");
         })
-        .catch((err) => {
+        .catch(() => {
+          setDynamicInputIsLoading(false);
           toast("Tente novamente mais tarde :(");
         });
     },
@@ -90,173 +104,190 @@ export default function SignUpForm() {
       };
 
       setDynamicInputIsLoading(true);
-      cep.getAddress(valueWithoutMask).then(({ data }: any) => {
-        setDynamicInputIsLoading(false);
+      cep
+        .getAddress(valueWithoutMask)
+        .then((response) => {
+          const data = response.data as GetViaCepData;
+          setDynamicInputIsLoading(false);
 
-        setData({
-          ...newDataValues,
-          street: data.logradouro,
-          city: data.localidade,
-          neighborhood: data.bairro,
-          state: data.uf,
+          setData({
+            ...newDataValues,
+            street: data.logradouro,
+            city: data.localidade,
+            neighborhood: data.bairro,
+            state: data.uf,
+          });
+        })
+        .catch(() => {
+          toast("não foi possivel obter o endereço através do CEP");
         });
-      });
     }
   }
 
   return (
     <StyledForm onSubmit={handleSubmit}>
-      <FlexCenterDiv>
-        <Person />
-        <Spreader />
-        <InputWrapper>
-          <Input
-            label="Nome Completo"
-            name="name"
-            type="text"
-            value={data.name}
-            onChange={handleChange("name")}
-          />
-          {errors.name && <ErrorMsg>{errors.name}</ErrorMsg>}
-        </InputWrapper>
-      </FlexCenterDiv>
-      <Spreader />
-      <FlexCenterDiv>
-        <Mail />
-        <Spreader />
-        <InputWrapper>
-          <Input
-            label="e-mail@email.com"
-            name="email"
-            type="text"
-            value={data.email}
-            onChange={handleChange("email")}
-          />
-          {errors.email && <ErrorMsg>{errors.email}</ErrorMsg>}
-        </InputWrapper>
-      </FlexCenterDiv>
-      <Spreader />
-      <FlexCenterDiv>
-        <Cake />
-        <Spreader />
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <fieldset disabled={dynamicInputIsLoading}>
+        <FlexCenterDiv>
+          <Person />
+          <Spreader />
           <InputWrapper>
-            <MobileDatePicker
-              views={["year", "month", "day"]}
-              label="Data de Nascimento"
-              clearable
-              value={data.birthday}
-              renderInput={(params) => <Input {...params} />}
-              onChange={(date) => {
-                customHandleChange(
-                  "birthday",
-                  (d) => d && dayjs(d).format("DD-MM-YYYY")
-                )(date);
-              }}
+            <Input
+              label="Nome Completo"
+              name="name"
+              type="text"
+              value={data.name}
+              onChange={handleChange("name")}
             />
-            {errors.birthday && <ErrorMsg>{errors.birthday}</ErrorMsg>}
+            {errors.name && <ErrorMsg>{errors.name}</ErrorMsg>}
           </InputWrapper>
-        </LocalizationProvider>
-      </FlexCenterDiv>
-      <Spreader />
-      <FlexCenterDiv>
-        <Room />
+        </FlexCenterDiv>
         <Spreader />
-        <div>
-          <FlexCenterDiv>
+        <FlexCenterDiv>
+          <Mail />
+          <Spreader />
+          <InputWrapper>
+            <Input
+              label="e-mail@email.com"
+              name="email"
+              type="text"
+              value={data.email}
+              onChange={handleChange("email")}
+            />
+            {errors.email && <ErrorMsg>{errors.email}</ErrorMsg>}
+          </InputWrapper>
+        </FlexCenterDiv>
+        <Spreader />
+        <FlexCenterDiv>
+          <Cake />
+          <Spreader />
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
             <InputWrapper>
-              <Input
-                label="CEP"
-                name="cep"
-                mask="99999-999"
-                value={data.cep || ""}
-                onChange={(e: any) => {
-                  handleChange("cep")(e);
-                  handleCepChanges(e);
+              <MobileDatePicker
+                views={["year", "month", "day"]}
+                label="Data de Nascimento"
+                clearable
+                value={data.birthday}
+                renderInput={(params) => <Input {...params} />}
+                onChange={(date) => {
+                  customHandleChange(
+                    "birthday",
+                    (d) => d && dayjs(d).format("DD-MM-YYYY")
+                  )(date);
                 }}
               />
-              {errors.cep && <ErrorMsg>{errors.cep}</ErrorMsg>}
+              {errors.birthday && <ErrorMsg>{errors.birthday}</ErrorMsg>}
             </InputWrapper>
+          </LocalizationProvider>
+        </FlexCenterDiv>
+        <Spreader />
+        <FlexCenterDiv>
+          <Room />
+          <Spreader />
+          <div>
+            <FlexCenterDiv>
+              <InputWrapper>
+                <Input
+                  label="CEP"
+                  name="cep"
+                  mask="99999-999"
+                  value={data.cep || ""}
+                  onChange={(e: any) => {
+                    handleChange("cep")(e);
+                    handleCepChanges(e);
+                  }}
+                />
+                {errors.cep && <ErrorMsg>{errors.cep}</ErrorMsg>}
+              </InputWrapper>
+              <Spreader />
+              <InputWrapper>
+                <Select
+                  label="Estado"
+                  name="state"
+                  id="state"
+                  value={data.state || ""}
+                  onChange={handleChange("state")}
+                >
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
+                  {ufList.map((uf) => (
+                    <MenuItem value={uf.name} key={uf.id}>
+                      <em>{uf.name}</em>
+                    </MenuItem>
+                  ))}
+                </Select>
+                {errors.state && <ErrorMsg>{errors.state}</ErrorMsg>}
+              </InputWrapper>
+            </FlexCenterDiv>
+            <Spreader />
+            <FlexCenterDiv>
+              <InputWrapper>
+                <Input
+                  label="Rua"
+                  name="street"
+                  value={data.street || ""}
+                  onChange={handleChange("street")}
+                  disabled={dynamicInputIsLoading}
+                />
+                {errors.street && <ErrorMsg>{errors.street}</ErrorMsg>}
+              </InputWrapper>
+              <Spreader />
+              <InputWrapper>
+                <Input
+                  label="Número"
+                  name="number"
+                  value={data.number || ""}
+                  onChange={handleChange("number")}
+                />
+                {errors.number && <ErrorMsg>{errors.number}</ErrorMsg>}
+              </InputWrapper>
+            </FlexCenterDiv>
             <Spreader />
             <InputWrapper>
-              <Select
-                label="Estado"
-                name="state"
-                id="state"
-                value={data.state || ""}
-                onChange={handleChange("state")}
-              >
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
-                {ufList.map((uf) => (
-                  <MenuItem value={uf.name} key={uf.id}>
-                    <em>{uf.name}</em>
-                  </MenuItem>
-                ))}
-              </Select>
-              {errors.state && <ErrorMsg>{errors.state}</ErrorMsg>}
-            </InputWrapper>
-          </FlexCenterDiv>
-          <Spreader />
-          <FlexCenterDiv>
-            <InputWrapper>
               <Input
-                label="Rua"
-                name="street"
-                value={data.street || ""}
-                onChange={handleChange("street")}
+                label="Cidade"
+                name="city"
+                value={data.city || ""}
+                onChange={handleChange("city")}
                 disabled={dynamicInputIsLoading}
               />
-              {errors.street && <ErrorMsg>{errors.street}</ErrorMsg>}
+              {errors.city && <ErrorMsg>{errors.city}</ErrorMsg>}
             </InputWrapper>
             <Spreader />
             <InputWrapper>
               <Input
-                label="Número"
-                name="number"
-                value={data.number || ""}
-                onChange={handleChange("number")}
+                label="Bairro"
+                name="neighborhood"
+                value={data.neighborhood || ""}
+                onChange={handleChange("neighborhood")}
+                disabled={dynamicInputIsLoading}
               />
-              {errors.number && <ErrorMsg>{errors.number}</ErrorMsg>}
+              {errors.neighborhood && (
+                <ErrorMsg>{errors.neighborhood}</ErrorMsg>
+              )}
             </InputWrapper>
-          </FlexCenterDiv>
-          <Spreader />
-          <InputWrapper>
-            <Input
-              label="Cidade"
-              name="city"
-              value={data.city || ""}
-              onChange={handleChange("city")}
-              disabled={dynamicInputIsLoading}
-            />
-            {errors.city && <ErrorMsg>{errors.city}</ErrorMsg>}
-          </InputWrapper>
-          <Spreader />
-          <InputWrapper>
-            <Input
-              label="Bairro"
-              name="neighborhood"
-              value={data.neighborhood || ""}
-              onChange={handleChange("neighborhood")}
-              disabled={dynamicInputIsLoading}
-            />
-            {errors.neighborhood && <ErrorMsg>{errors.neighborhood}</ErrorMsg>}
-          </InputWrapper>
-          <Spreader />
-          <InputWrapper>
-            <Input
-              label="Complemento"
-              name="addressDetail"
-              value={data.addressDetail || ""}
-              onChange={handleChange("addressDetail")}
-            />
-          </InputWrapper>
-        </div>
-      </FlexCenterDiv>
-      <Button type="submit" disabled={dynamicInputIsLoading}>
+            <Spreader />
+            <InputWrapper>
+              <Input
+                label="Complemento"
+                name="addressDetail"
+                value={data.addressDetail || ""}
+                onChange={handleChange("addressDetail")}
+              />
+            </InputWrapper>
+          </div>
+        </FlexCenterDiv>
+      </fieldset>
+      <LoadingButton
+        type="submit"
+        disabled={dynamicInputIsLoading}
+        loading={dynamicInputIsLoading}
+        loadingPosition="start"
+        startIcon={<SaveIcon />}
+        variant="outlined"
+      >
         Salvar
-      </Button>
+      </LoadingButton>
     </StyledForm>
   );
 }

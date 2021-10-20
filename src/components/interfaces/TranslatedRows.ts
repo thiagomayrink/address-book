@@ -1,7 +1,8 @@
-export default interface translatedRows {
+export default interface TranslatedRows {
   Id: string;
   Nome: string;
   "E-mail": string;
+  Nascimento: string;
   address: {
     CEP: string;
     Estado: string;
