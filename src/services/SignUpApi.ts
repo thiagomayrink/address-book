@@ -1,25 +1,19 @@
 import api from "@/services/api";
 import SignUpData from "@/components/interfaces/SignUpData";
-
-const config = {
-  data: {
-    email: "email",
-  },
-};
 export default class SignUpApi {
   save(body: SignUpData) {
-    return api.patch("/signup", body);
+    return api.patch("api/signup", body);
   }
 
   getOneByEmail(email: string) {
-    return api.get(`/signup/?email=${email}`);
+    return api.get(`api/signup/?email=${email}`);
   }
 
   getAll() {
-    return api.get("/signup");
+    return api.get("api/signup");
   }
 
   deleteByEmail(email: string) {
-    return api.delete("/signup", { data: email });
+    return api.delete("api/signup", { data: email });
   }
 }
