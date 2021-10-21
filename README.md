@@ -1,43 +1,40 @@
-# Next.js with TypeScript example
+# Address-Book
 
-## How to use
+### About
+An easy to use Addressbook app made with Nextjs that allow users to share addresses.
 
-Download the example [or clone the repo](https://github.com/mui-org/material-ui):
+<img src="/assets/address-book-usage.gif" />
 
-<!-- #default-branch-switch -->
+Try it out now at [Vercel Deploy](https://address-book-thiagomayrink.vercel.app/)
 
-```sh
-curl https://codeload.github.com/mui-org/material-ui/tar.gz/master | tar -xz --strip=2  material-ui-master/examples/nextjs-with-typescript
-cd nextjs-with-typescript
+## Features and Routes
+- Add an address (POST: api/sign)
+- View all addresses (GET: api/sign)
+- Edit an address (PATCH: api/sign)
+- Delete an address (DELETE: api/sign)
+
+## Technologies
+The following tools and frameworks were used in the construction of the project:<br>
+<p>
+  <img style='margin: 5px;' src="https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white"/>
+  <img style='margin: 5px;' src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB"/>
+  <img style='margin: 5px;' src="https://img.shields.io/badge/react-input%20mask%20-%2320232a.svg?&style=for-the-badge&logo=react"/>
+  <img style='margin: 5px;' src="https://img.shields.io/badge/Material--UI-0081CB?style=for-the-badge&logo=material-ui&logoColor=white"/>
+  <img style='margin: 5px;' src='https://img.shields.io/badge/axios%20-%2320232a.svg?&style=for-the-badge&color=informational'>
+  <img style='margin: 5px;' src="https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white"/>  
+  <img style='margin: 5px;' src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white"/>
+  <img style='margin: 5px;' src='https://img.shields.io/badge/styled-components%20-%2320232a.svg?&style=for-the-badge&color=b8679e&logo=styled-components&logoColor=%3a3a3a'>
+</p>
+
+## How to run
+
+1. Clone this repository
+2. Install dependencies
+```bash
+npm i
 ```
-
-Install it and run:
-
-```sh
-npm install
+3. Run with
+```bash
 npm run dev
 ```
-
-or:
-
-<!-- #default-branch-switch -->
-
-[![Edit on CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/github/mui-org/material-ui/tree/master/examples/nextjs-with-typescript)
-
-## The idea behind the example
-
-The project uses [Next.js](https://github.com/zeit/next.js), which is a framework for server-rendered React apps.
-It includes `@mui/material` and its peer dependencies, including `emotion`, the default style engine in MUI v5. If you prefer, you can [use styled-components instead](https://mui.com/guides/interoperability/#styled-components).
-
-## The link component
-
-Next.js has [a custom Link component](https://nextjs.org/docs/api-reference/next/link).
-The example folder provides adapters for usage with MUI.
-More information [in the documentation](https://mui.com/guides/routing/#next-js).
-
-## What's next?
-
-<!-- #default-branch-switch -->
-
-You now have a working example project.
-You can head back to the documentation, continuing browsing it from the [templates](https://mui.com/getting-started/templates/) section.
+4. Finally access http://localhost:3000
