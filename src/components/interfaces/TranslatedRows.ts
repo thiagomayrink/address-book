@@ -1,6 +1,7 @@
 export default interface TranslatedRows {
   Id: string;
   Nome: string;
+  slug: string;
   "E-mail": string;
   Nascimento: string;
   address: {

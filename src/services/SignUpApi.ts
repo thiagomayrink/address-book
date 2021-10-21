@@ -1,19 +1,25 @@
 import api from "@/services/api";
 import SignUpData from "@/components/interfaces/SignUpData";
+import PatchSignUpData from "@/components/interfaces/PatchSignUpData";
+
 export default class SignUpApi {
   save(body: SignUpData) {
-    return api.patch("api/signup", body);
+    return api.post("/api/signup", body);
   }
 
-  getOneByEmail(email: string) {
-    return api.get(`api/signup/?email=${email}`);
+  update(body: PatchSignUpData) {
+    return api.patch("/api/signup", body);
+  }
+
+  getOneBySlug(slug: string) {
+    return api.get(`/api/signup/?slug=${slug}`);
   }
 
   getAll() {
-    return api.get("api/signup");
+    return api.get("/api/signup");
   }
 
-  deleteByEmail(email: string) {
-    return api.delete("api/signup", { data: email });
+  deleteBySlug(slug: string) {
+    return api.delete("/api/signup", { data: slug });
   }
 }

@@ -53,7 +53,7 @@ export default function CollapsibleTable() {
       {rows && rows.length && !loading ? (
         <TableContainer component={Paper}>
           <Table aria-label="collapsible table">
-            <TableHeader>Endereços Cadastrados</TableHeader>
+            <TableHeader>{"Endereços Cadastrados"}</TableHeader>
             <TableBody>
               {rows.map((row) => (
                 <Row

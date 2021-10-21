@@ -35,20 +35,20 @@ export default function Row(props: {
 
   const { signUp } = useApi();
 
-  function editItem(email: string) {
-    router.push(`/addresses/${email}`);
+  function editItem(slug: string) {
+    router.push(`/addresses/${slug}`);
   }
 
-  function deleteItem(email: string) {
+  function deleteItem(slug: string) {
     setIsLoading(true);
     signUp
-      .deleteByEmail(email)
+      .deleteBySlug(slug)
       .then((response: any) => {
         const item = response.data.value || null;
         //refatorar caso seja possível fazer utilizando zustand!
-        if (item && item.email) {
+        if (item && item.slug) {
           const filteredRows = props.rows.filter(
-            (row) => row["E-mail"] !== item.email
+            (row) => row["slug"] !== item.slug
           );
           props.setRows(filteredRows);
         }
@@ -61,7 +61,7 @@ export default function Row(props: {
         toast("Não foi possível deletar! :(");
       });
   }
-
+  
   return (
     <>
       <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
@@ -93,14 +93,14 @@ export default function Row(props: {
                 Endereço
                 <Button
                   disabled={isLoading}
-                  onClick={() => editItem(row["E-mail"])}
+                  onClick={() => editItem(row["slug"])}
                 >
                   <BuildIcon />
                 </Button>
                 <Button
                   disabled={isLoading}
                   color="secondary"
-                  onClick={() => deleteItem(row["E-mail"])}
+                  onClick={() => deleteItem(row["slug"])}
                 >
                   <DeleteForeverIcon />
                 </Button>

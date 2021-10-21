@@ -5,6 +5,7 @@ import { Person, Mail, Cake, Room } from "@mui/icons-material";
 import Spreader from "@/components/Spreader";
 import Input from "@/components/SignUpForm/Input";
 import SaveIcon from "@mui/icons-material/Save";
+import BuildIcon from "@mui/icons-material/Build";
 import MobileDatePicker from "@mui/lab/DatePicker";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
@@ -16,20 +17,29 @@ import validations from "@/components/SignUpForm/Validations";
 import Select from "@/components/SignUpForm/Select";
 import { ufList } from "@/components/SignUpForm/ufList";
 
-import AddressSubmitData from "@/components/interfaces/AddressSubmitData";
+import AddressEditData from "@/components/interfaces/AddressEditData";
 import GetViaCepData from "@/components/interfaces/GetViaCepData";
 
 import { MenuItem, Typography } from "@mui/material";
 import { toast } from "react-toastify";
-import LoadingButton from "./LoadingButton";
+import LoadingButton from "@/components/SignUpForm/LoadingButton";
 
 import { useRouter } from "next/router";
 import useApi from "@/hooks/useApi";
+import PatchSignUpData from "@/components/interfaces/PatchSignUpData";
+import SignUpGetData from "@/components/interfaces/SignUpGetData";
 
-export default function SignUpForm() {
+type Props = {
+  slug: string | null;
+};
+
+export default function EditForm(props: Props) {
+  const { slug } = props;
   const [dynamicInputIsLoading, setDynamicInputIsLoading] = useState(false);
   const router = useRouter();
   const { signUp, cep } = useApi();
+
+  const [isEditMode, setIsEditMode] = useState(true);
 
   const {
     handleSubmit,
@@ -41,12 +51,13 @@ export default function SignUpForm() {
   } = useForm({
     validations: validations,
 
-    onSubmit: (data: AddressSubmitData) => {
+    onSubmit: (data: AddressEditData) => {
       setDynamicInputIsLoading(true);
 
       const newData = {
         name: data.name,
         email: data.email,
+        slug: data.slug,
         birthday: data.birthday,
         address: {
           cep: data.cep,
@@ -57,23 +68,27 @@ export default function SignUpForm() {
           neighborhood: data.neighborhood,
           addressDetail: data.addressDetail,
         },
-      };
+      } as PatchSignUpData;
+
+      if (newData.slug === null) toast("Esse não é um cadastro válido");
 
       signUp
-        .save(newData)
+        .update(newData)
         .then(() => {
           setDynamicInputIsLoading(false);
-          toast("Salvo com sucesso!");
           router.push("/addresses");
+          toast("Atualizado com sucesso!");
         })
         .catch(() => {
           setDynamicInputIsLoading(false);
           toast("Tente novamente mais tarde :(");
         });
     },
+
     initialValues: {
       name: "",
       email: "",
+      slug: "",
       birthday: null,
       cep: "",
       street: "",
@@ -84,6 +99,32 @@ export default function SignUpForm() {
       addressDetail: "",
     },
   });
+
+  useEffect(() => {
+    if (slug !== null) {
+      signUp.getOneBySlug(slug).then((response) => {
+        const serverData = response?.data as PatchSignUpData;
+        const data = serverData as SignUpGetData;
+        const { address } = data;
+
+        const currentUserData = {
+          name: serverData.name,
+          email: serverData.email,
+          slug: serverData.slug,
+          birthday: serverData.birthday,
+
+          cep: address.cep,
+          street: address.street,
+          city: address.city,
+          number: address.number,
+          state: address.state,
+          neighborhood: address.neighborhood,
+          addressDetail: address.addressDetail,
+        };
+        setData(currentUserData);
+      });
+    }
+  }, [setData]);
 
   function isValidCep(cep: string) {
     return cep.length === 8;
@@ -124,7 +165,7 @@ export default function SignUpForm() {
   return (
     <StyledForm onSubmit={handleSubmit}>
       <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-        Adicionar Endereço
+        {isEditMode ? "Editar Endereço" : "Adicionar Endereço"}
       </Typography>
       <Spreader height="22px" />
       <fieldset disabled={dynamicInputIsLoading}>
@@ -284,7 +325,7 @@ export default function SignUpForm() {
         disabled={dynamicInputIsLoading}
         loading={dynamicInputIsLoading}
         loadingPosition="start"
-        startIcon={<SaveIcon />}
+        startIcon={isEditMode ? <BuildIcon /> : <SaveIcon />}
         variant="outlined"
       >
         Salvar
