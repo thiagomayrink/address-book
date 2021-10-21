@@ -3,9 +3,9 @@
 ### About
 An easy to use Addressbook app made with Nextjs that allow users to share addresses.
 
-<img src="/assets/address-book-usage.gif" />
-
-Try it out now at [Vercel Deploy](https://address-book-thiagomayrink.vercel.app/)
+<img src="/assets/address-book-usage.gif" width="220"/>
+Try it out now at </br>
+https://address-book-thiagomayrink.vercel.app/
 
 ## Features and Routes
 - Add an address (POST: api/sign)
