@@ -57,7 +57,7 @@ export default function CollapsibleTable() {
             <TableBody>
               {rows.map((row) => (
                 <Row
-                  key={row["E-mail"]}
+                  key={row["slug"]}
                   row={row}
                   rows={rows}
                   setRows={setRows}

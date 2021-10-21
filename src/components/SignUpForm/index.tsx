@@ -66,9 +66,13 @@ export default function SignUpForm() {
           toast("Salvo com sucesso!");
           router.push("/addresses");
         })
-        .catch(() => {
+        .catch((err) => {
           setDynamicInputIsLoading(false);
-          toast("Tente novamente mais tarde :(");
+          if (err?.response?.status === 409) {
+            toast("O e-mail já está cadastrado!");
+          } else {
+            toast("Tente novamente mais tarde :(");
+          }
         });
     },
     initialValues: {

@@ -50,7 +50,7 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
     const result = await collection.findOne({ email: userData.email });
 
     if (result && result.email === userData.email) {
-      return response.status(409).json({ text: "o email já está cadastrado" });
+      return response.status(409).end();
     }
 
     await collection.insertOne(userData);
@@ -73,10 +73,10 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
 
     return response.status(200).json({ text: "Updated" });
   }
- 
+
   if (request.method === "GET" && request?.query?.slug) {
     const slug = request.query.slug as any;
-    
+
     const result = await collection.findOne({ slug: slug });
     if (!result) {
       return response.status(400).json({ text: "Bad request" });
@@ -113,7 +113,7 @@ function validateAndReturnPatchData(body: PatchSignUpData) {
     return false;
   }
 
-  const query = { email: email };
+  const query = { slug: slug };
   const update = {
     $set: {
       name,
