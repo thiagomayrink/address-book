@@ -33,8 +33,9 @@ The following tools and frameworks were used in the construction of the project:
 ```bash
 npm i
 ```
-3. Run with
+3. Setup .env variables according to .env.example file
+4. Run with
 ```bash
 npm run dev
 ```
-4. Finally access http://localhost:3000
+5. Finally access http://localhost:3000
